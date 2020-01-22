@@ -1,6 +1,7 @@
 package com.hhh.springbootjpa.controller;
 
 import com.hhh.springbootjpa.dto.UserDto;
+import com.hhh.springbootjpa.dto.UserPageDto;
 import com.hhh.springbootjpa.entity.UserEntity;
 import com.hhh.springbootjpa.exception.CustomException;
 import com.hhh.springbootjpa.repository.UserRepository;
@@ -8,6 +9,8 @@ import com.hhh.springbootjpa.response.BaseResMessage;
 import com.hhh.springbootjpa.response.PageResMessage;
 import com.hhh.springbootjpa.service.UserService;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -78,8 +81,9 @@ public class UserController {
   }
 
   @PostMapping("/findUserPage")
-  public PageResMessage findUserPage(@RequestBody @Valid PageRequest page) {
+  public PageResMessage findUserPage(@RequestBody @Valid UserPageDto dto) {
     //分页选项
-    return PageResMessage.success(userRepository.findUserPage(page));
+    PageRequest pageRequest = PageRequest.of(dto.getPageIndex(), dto.getPageSize(), StringUtils.isEmpty(dto.getSortType())&&"asc".equalsIgnoreCase(dto.getSortType())?Sort.Direction.ASC:Sort.Direction.DESC, "id");
+    return PageResMessage.success(userRepository.findUserPage(pageRequest));
   }
 }

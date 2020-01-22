@@ -60,9 +60,10 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 
   /**
    * 分页查询
+   * 需要在companyEntity中写构造方法，注意countQuery 中count参数
    * @param pageable
    * @return
    */
-  @Query(value = "select id,companyName from sp_company",countQuery = "select id,companyName from sp_company")
+  @Query(value = "select new com.hhh.springbootjpa.entity.CompanyEntity(id,companyName) from sp_company",countQuery = "select count(1) from sp_company")
   Page<CompanyEntity> findUserPage(Pageable pageable);
 }
